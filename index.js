@@ -11,3 +11,5 @@ client.on("message", msg => {
     msg.channel.send("TEST DEEZ NUTS");
   }    
 });
+
+client.login('ODY2NTc1OTQ2OTk1NzI4Mzk1.YPUjvQ.mWzZo2iy8-Y0o4JBuw7rUkfWgWQ')
