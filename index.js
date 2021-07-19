@@ -11,17 +11,22 @@ console.log(`Your app is listening at http://localhost:${port}`)
 /////////////////
 
 const Discord = require('discord.js');
-
 const client = new Discord.Client();
 const mySecret = process.env['TOKEN']
-
+const fs = require('fs')
 const prefix = ".";
 
 client.commands = new Discord.Collection();
+client.events = new Discord.Collection();
+
+['command_handler', 'event_handler'].forEach(handler =>{
+  require(`./handlers/${handlers}`)(client, Discord)
+})
 
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 for(const file of commandFiles){
     const command = require(`./commands/${file}`);
+
     client.commands.set(command.name, command);
 }
 
@@ -126,7 +131,7 @@ client.on("message", msg => {
     const command = args.shift().toLowerCase();
     console.log(command);
     if(command == 'ping'){
-      client.commands.get('ping').execute(message, args);
+      client.commands.get('ping').execute(msg, args);
     }
     else if (command == 'somethingelse'){
       //for new commands
