@@ -14,13 +14,12 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const mySecret = process.env['TOKEN']
 const fs = require('fs')
-const prefix = ".";
 
 client.commands = new Discord.Collection();
 client.events = new Discord.Collection();
 
 ['command_handler', 'event_handler'].forEach(handler =>{
-  require(`./handlers/${handlers}`)(client, Discord)
+  require(`./handlers/${handler}`)(client, Discord)
 })
 
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
@@ -29,10 +28,6 @@ for(const file of commandFiles){
 
     client.commands.set(command.name, command);
 }
-
-client.on("ready", () => {
-  console.log(`Log in successful! Welcome back, ${client.user.tag}`);
-});
 
 const triggersCurse = [
   "fuck",
@@ -66,7 +61,7 @@ const responseCurse = [
   "please spoiler tag your swearing. <:lily_grrrr:864559494830882826>",
   "I know it's hard to control your cursing, but I know you can do it! <:lily_ok:859048734281302048>",
   "you don't need to swear. Here, I give you hugsssss~",
-  "you shouldn't curse all the time. Try and be more positive!"
+  "you shouldn't curse all the time. Try and be more positive!",
 ];
 
 const triggersNSFW = [
@@ -79,7 +74,7 @@ const triggersNSFW = [
   "kantot",
   "blowjob",
   "faggot",
-  "fag"  
+  "fag"
 ]
 
 const responseNSFW = [
@@ -107,17 +102,35 @@ const LilyAnswers = [
   "My sources say no.",
   "lol no.",
   "Very doubtful.",
-  "<:lily_ok:859048734281302048>",
 ];  
 
-const askLily = "Lily,"  
+const askLily = "Lily,"
+
+const ttr = [
+  "tuturu",
+  "tuturuu"
+]
 
 client.on("message", msg => {
+  const args = msg.content.slice(askLily.length).split(/ +/)
+  const messageToSay = args.join(" ")
+  const askEmbed = new Discord.MessageEmbed()
+    .setAuthor('~ Ask Lily! ~')
+    .setColor('#a6d3fa')
+    .setTimestamp()
+    .setThumbnail('https://i.imgur.com/1HedCGx.png')
+    .addFields(
+      { name: `${msg.author.username} :`, value: `*"${messageToSay}"*`},
+      { name: "Lily :", value: `*"${(LilyAnswers[Math.floor(Math.random() * LilyAnswers.length)])}"*`},
+    )
   if(msg.content==="test"){
     msg.channel.send("TEST DEEZ NUTS");
   }
+  if(ttr.some(word => msg.content.toLowerCase().includes(word))){
+    msg.react(`<:Tuturu:846784792041488424>`);
+  }
   if(msg.content.startsWith(askLily)){
-    msg.channel.send(LilyAnswers[Math.floor(Math.random() * LilyAnswers.length)])
+    msg.channel.send(askEmbed)
   }
   if(triggersCurse.some(word => msg.content.toLowerCase().includes(word))){
     msg.reply(responseCurse[Math.floor(Math.random() * responseCurse.length)]);
@@ -125,18 +138,6 @@ client.on("message", msg => {
   if(triggersNSFW.some(word => msg.content.toLowerCase().includes(word))){
     msg.reply(responseNSFW[Math.floor(Math.random() * responseNSFW.length)]);
   }
-  if(msg.content.startsWith(prefix)){
-    const args = msg.content.slice(prefix.length).split(/ +/);
-    console.log("Yes");
-    const command = args.shift().toLowerCase();
-    console.log(command);
-    if(command == 'ping'){
-      client.commands.get('ping').execute(msg, args);
-    }
-    else if (command == 'somethingelse'){
-      //for new commands
-    }
-  }    
 });
 
 client.login(mySecret);
