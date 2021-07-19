@@ -8,8 +8,8 @@ client.on("ready", () => {
 
 client.on("message", msg => {
   if(msg.content==="test"){
-    msg.channel.send("TEST DEEZ NUTS");
+    msg.channel.send("TEST DEEZ NUTS22");
   }    
 });
 
-client.login('ODY2NTc1OTQ2OTk1NzI4Mzk1.YPUjvQ.mWzZo2iy8-Y0o4JBuw7rUkfWgWQ')
+client.login(mySecret);
